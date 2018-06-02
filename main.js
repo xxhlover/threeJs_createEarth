@@ -75,10 +75,10 @@ function createBg(){
 	renderer.render(scene, camera);
 }
 
-var earchMesh;
+var earthMesh;
 function createEarch(){
 	//地球贴图
-	let earchGeometry = new THREE.SphereGeometry(25, 40, 40);
+	let earthGeometry = new THREE.SphereGeometry(25, 40, 40);
 	let texture = THREE.ImageUtils.loadTexture('./img/earth4.jpg', {}, function() {
 	    renderer.render(scene, camera);
 	});
@@ -92,8 +92,8 @@ function createEarch(){
     material.specular = new THREE.Color('#909090');
     material.shininess = 3;	
 	
-	earchMesh = new THREE.Mesh(earchGeometry,material);
-	scene.add(earchMesh);
+	earthMesh = new THREE.Mesh(earthGeometry,material);
+	scene.add(earthMesh);
 	renderer.render(scene, camera);
 }
 
@@ -117,7 +117,7 @@ function createCloud(){
 
 function action_fun(){
 	requestAnimationFrame( action_fun );
-	earchMesh.rotation.y += controls.rotationSpeed
+	earthMesh.rotation.y += controls.rotationSpeed
 	cloudMesh.rotation.y +=controls.rotationSpeed+0.000001;
 	cloudMesh.rotation.x +=0.000001;
 	bgMesh.rotation.y += .001;
