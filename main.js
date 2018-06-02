@@ -29,16 +29,14 @@ function createScene(){
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(width,height);
 	container.appendChild(renderer.domElement);
-	
-//	axes = new THREE.AxisHelper(2000);
-//  scene.add(axes);
 }
-
+var directionalLight;
 function createLight(){
+	//聚光灯 特点：从一点发散出去，能显示阴影;
 	let spotLight = new THREE.SpotLight(0xffffff);
-	spotLight.intensity = .1;
+	spotLight.intensity = .2;
 	spotLight.position.x = -46;
-    spotLight.position.y = 35;
+    spotLight.position.y = 55;
     spotLight.position.z = -44;
     spotLight.angle = 0.3;
     spotLight.castShadow = false;
@@ -51,13 +49,14 @@ function createLight(){
     spotLight.shadowMapSizeHeight = 1024;
     spotLight.shadowMapSizeWidth = 1024;
     
+    //环境光.特点：会为整个画布添加上颜色;
     let ambientLight = new THREE.AmbientLight(0x393939, 0.5);
-    
-    let directionalLight = new THREE.DirectionalLight(0xffffff);
-    directionalLight.position.x = 500;
+    //方向光光源，类似于太阳光，特点：被照到的地方光强一致;
+    directionalLight = new THREE.DirectionalLight(0xffffff);
+    directionalLight.position.x = 0;
     directionalLight.position.y = 0;
-    directionalLight.position.z = -1000;
-    directionalLight.intensity = 1;
+    directionalLight.position.z = -100;
+    directionalLight.intensity = controls.directionalLightIntensity;
     
     scene.add(spotLight,ambientLight,directionalLight)
 }
@@ -78,25 +77,20 @@ function createBg(){
 
 var earchMesh;
 function createEarch(){
+	//地球贴图
 	let earchGeometry = new THREE.SphereGeometry(25, 40, 40);
 	let texture = THREE.ImageUtils.loadTexture('./img/earth4.jpg', {}, function() {
 	    renderer.render(scene, camera);
 	});
-	
-	let bumpTexture = new THREE.TextureLoader().load('./img/earth_bump.jpg');
-    let specTexture = new THREE.TextureLoader().load('./img/earth_spec.jpg');
-
-    let material = new THREE.MeshPhongMaterial();
-    material.transparent = true;
+	let material = new THREE.MeshPhongMaterial();
+	let bumpTexture = THREE.ImageUtils.loadTexture('./img/earth_bump.jpg') 
+    let specTexture = THREE.ImageUtils.loadTexture('./img/earth_spec.jpg') 
     material.map = texture;
-
     material.bumpMap = bumpTexture;
-    material.bumpScale = 0.15;
-
+    material.bumpScale = .8;
     material.specularMap = specTexture;
     material.specular = new THREE.Color('#909090');
-
-    material.shininess = 5;	
+    material.shininess = 3;	
 	
 	earchMesh = new THREE.Mesh(earchGeometry,material);
 	scene.add(earchMesh);
@@ -105,7 +99,7 @@ function createEarch(){
 
 var cloudMesh;
 function createCloud(){
-	let cloudGeometry = new THREE.SphereGeometry(25.5, 40, 40);
+	let cloudGeometry = new THREE.SphereGeometry(25.8, 40, 40);
 	let texture = THREE.ImageUtils.loadTexture('./img/earth_cloud.png', {}, function() {
 	    renderer.render(scene, camera);
 	});
@@ -113,18 +107,21 @@ function createCloud(){
 	    map: texture
 	});
 	cloudMesh = new THREE.Mesh(cloudGeometry,material);
+	//设置贴图是否透明 transparent&opacity;
 	material.transparent = true;
     material.opacity = 1;
+    
 	scene.add(cloudMesh);
 	renderer.render(scene, camera);
 }
 
 function action_fun(){
 	requestAnimationFrame( action_fun );
-	earchMesh.rotation.y += 0.01;
-	cloudMesh.rotation.y +=0.010001;
+	earchMesh.rotation.y += controls.rotationSpeed
+	cloudMesh.rotation.y +=controls.rotationSpeed+0.000001;
 	cloudMesh.rotation.x +=0.000001;
 	bgMesh.rotation.y += .001;
+	directionalLight.intensity = controls.directionalLightIntensity;
 	renderer.render(scene, camera);
 }
 
