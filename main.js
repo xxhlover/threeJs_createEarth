@@ -8,7 +8,6 @@ function init(){
 	createLight();
 	//创建背景
 	createBg();
-	
 	//创建地球地表
 	createEarch();
 	//创建云层
